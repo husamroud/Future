@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحدي نجوم كأس العالم 2026 🏆</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: radial-gradient(circle at center, #004488 0%, #001a33 100%);
+            color: white;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Custom Colors & Utilities */
+        .text-gold { color: #D4AF37; }
+        .bg-gold { background-color: #D4AF37; }
+        .border-gold { border-color: #D4AF37; }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* Animations */
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop-in { animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop { animation: pop 0.3s ease-in-out; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-4px); }
+            80% { transform: translateX(4px); }
+        }
+        .animate-shake { animation: shake 0.4s ease-in-out; }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(212, 175, 55, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.8); }
+        }
+        .animate-pulse-glow { animation: pulse-glow 2s infinite; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+
+        .correct-answer-fx {
+            background-color: rgba(22, 163, 74, 0.8) !important;
+            border-color: #4ade80 !important;
+            box-shadow: 0 0 20px rgba(74, 222, 128, 0.6) !important;
+        }
+
+        .wrong-answer-fx {
+            background-color: rgba(220, 38, 38, 0.8) !important;
+            border-color: #f87171 !important;
+            box-shadow: 0 0 20px rgba(248, 113, 113, 0.6) !important;
+        }
+
+        /* Confetti Canvas */
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 50;
+        }
+    </style>
+</head>
+<body class="flex flex-col relative">
+
+    <!-- Background Music -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="http://googleusercontent.com/file_content/0" type="audio/mpeg">
+    </audio>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas" class="hidden"></canvas>
+
+    <!-- Header Section -->
+    <header class="w-full p-4 flex justify-between items-center z-10 glass-panel">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-trophy text-gold text-3xl"></i>
+            <h1 class="text-2xl font-black tracking-wider drop-shadow-md">نجوم 2026</h1>
+        </div>
+        <div class="flex gap-4">
+            <button id="sfx-btn" class="w-10 h-10 rounded-full glass-panel hover:bg-white/20 transition-colors flex items-center justify-center" title="المؤثرات الصوتية">
+                <i class="fas fa-volume-up text-lg text-white"></i>
+            </button>
+            <button id="music-btn" class="w-10 h-10 rounded-full glass-panel hover:bg-white/20 transition-colors flex items-center justify-center" title="الموسيقى">
+                <i class="fas fa-music text-lg text-white"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- App Container -->
+    <main class="flex-1 flex items-center justify-center p-4 z-10 relative">
+        
+        <!-- ================= START SCREEN ================= -->
+        <div id="start-screen" class="text-center w-full max-w-2xl animate-pop-in">
+            <div class="mb-8 relative inline-block">
+                <i class="fas fa-globe text-9xl text-blue-400 opacity-20 absolute -inset-4 blur-sm animate-pulse"></i>
+                <i class="fas fa-trophy text-9xl text-gold relative z-10 animate-float drop-shadow-[0_0_30px_rgba(212,175,55,0.6)]"></i>
+            </div>
+            <h2 class="text-5xl font-black mb-4 text-transparent bg-clip-text bg-gradient-to-l from-gold via-yellow-200 to-gold drop-shadow-lg">تحدي نجوم كأس العالم</h2>
+            <p class="text-xl text-blue-200 mb-10 leading-relaxed max-w-lg mx-auto">تنافس مع صديقك في التعرف على المنتخبات الصحيحة لنجوم كرة القدم المشاركين في مونديال 2026. الأسرع يفوز بنقاط أكثر!</p>
+            
+            <button id="start-game-btn" class="bg-gradient-to-r from-yellow-600 to-yellow-400 text-blue-900 font-black text-2xl py-4 px-12 rounded-full hover:scale-105 hover:shadow-[0_0_30px_rgba(212,175,55,0.5)] transition-all duration-300">
+                ابدأ التحدي الآن <i class="fas fa-play mr-2"></i>
+            </button>
+        </div>
+
+        <!-- ================= GAME SCREEN ================= -->
+        <div id="game-screen" class="hidden w-full max-w-4xl flex-col items-center">
+            
+            <!-- Score Board -->
+            <div class="w-full flex justify-between items-center mb-6 glass-panel rounded-2xl p-4">
+                <div class="text-center w-1/3 p-2 rounded-xl transition-colors duration-300" id="p1-panel">
+                    <h3 class="text-lg font-bold text-blue-200">اللاعب الأول</h3>
+                    <p class="text-4xl font-black text-gold" id="p1-score">0</p>
+                </div>
+                
+                <div class="text-center w-1/3 border-x border-white/10">
+                    <p class="text-sm text-blue-300 mb-1">الجولة</p>
+                    <p class="text-2xl font-bold"><span id="round-current text-white">1</span> <span class="text-gray-400">/ 20</span></p>
+                </div>
+                
+                <div class="text-center w-1/3 p-2 rounded-xl transition-colors duration-300" id="p2-panel">
+                    <h3 class="text-lg font-bold text-blue-200">اللاعب الثاني</h3>
+                    <p class="text-4xl font-black text-gold" id="p2-score">0</p>
+                </div>
+            </div>
+
+            <!-- Current Turn Indicator -->
+            <div id="turn-indicator" class="mb-4 px-6 py-2 rounded-full bg-blue-800 border border-blue-500 font-bold text-lg animate-pulse">
+                دور اللاعب الأول
+            </div>
+
+            <!-- Main Game Card -->
+            <div class="relative w-full max-w-2xl glass-panel rounded-3xl p-6 md:p-8 flex flex-col items-center shadow-2xl">
+                
+                <!-- Timer -->
+                <div class="absolute top-4 left-4 flex items-center justify-center">
+                    <svg class="w-16 h-16 transform -rotate-90">
+                        <circle cx="32" cy="32" r="28" stroke="rgba(255,255,255,0.1)" stroke-width="6" fill="transparent" />
+                        <circle id="timer-circle" cx="32" cy="32" r="28" stroke="currentColor" stroke-width="6" fill="transparent" 
+                                stroke-dasharray="175.9" stroke-dashoffset="0" 
+                                class="text-green-400 transition-all duration-100 ease-linear" />
+                    </svg>
+                    <span id="timer-text" class="absolute text-xl font-bold">10</span>
+                </div>
+
+                <!-- Player Tag -->
+                <div class="absolute top-6 right-6">
+                    <span id="player-type" class="bg-gradient-to-r from-blue-600 to-blue-400 text-xs font-bold px-3 py-1 rounded-full shadow-md">
+                        نجم عالمي
+                    </span>
+                </div>
+
+                <!-- Player Image -->
+                <div class="relative w-40 h-40 md:w-52 md:h-52 rounded-full border-4 border-gold p-1 animate-pulse-glow mb-4 bg-blue-950 flex-shrink-0">
+                    <img id="player-image" src="" alt="Player" class="w-full h-full object-cover rounded-full" 
+                         onerror="this.src='https://ui-avatars.com/api/?name='+encodeURIComponent(this.alt)+'&background=0D8ABC&color=fff&size=256'">
+                    
+                    <!-- Feedback Overlay (Check / X) -->
+                    <div id="feedback-overlay" class="absolute inset-0 bg-black/60 rounded-full flex items-center justify-center opacity-0 scale-50 transition-all duration-300 z-10 pointer-events-none">
+                        <i id="feedback-icon" class="fas fa-check text-6xl text-green-400 drop-shadow-lg"></i>
+                    </div>
+                </div>
+
+                <h2 id="player-name" class="text-3xl md:text-4xl font-black mb-8 text-center drop-shadow-md">اسم اللاعب</h2>
+
+                <!-- Options -->
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+                    <!-- Buttons injected via JS -->
+                </div>
+                
+                <!-- Feedback Message -->
+                <div id="feedback-msg" class="h-8 mt-4 text-xl font-bold text-center opacity-0 transition-opacity duration-300"></div>
+            </div>
+        </div>
+
+        <!-- ================= END SCREEN ================= -->
+        <div id="end-screen" class="hidden w-full max-w-3xl text-center glass-panel rounded-3xl p-8 z-20">
+            <i class="fas fa-trophy text-8xl text-gold mb-4 animate-float drop-shadow-[0_0_30px_rgba(212,175,55,0.8)]"></i>
+            <h2 id="winner-text" class="text-5xl font-black mb-2 text-transparent bg-clip-text bg-gradient-to-l from-gold via-yellow-200 to-gold">اللاعب الأول فاز!</h2>
+            <p id="final-score-text" class="text-2xl text-blue-200 mb-8">النتيجة: 120 مقابل 90</p>
+            
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 text-right">
+                <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <h3 class="text-xl font-bold text-gold mb-3 border-b border-white/10 pb-2">إحصائيات اللاعب الأول</h3>
+                    <p class="mb-1"><i class="fas fa-check-circle text-green-400 ml-2"></i> إجابات صحيحة: <span id="p1-correct" class="font-bold">0</span></p>
+                    <p class="mb-1"><i class="fas fa-times-circle text-red-400 ml-2"></i> إجابات خاطئة: <span id="p1-wrong" class="font-bold">0</span></p>
+                    <p><i class="fas fa-chart-pie text-blue-400 ml-2"></i> نسبة النجاح: <span id="p1-ratio" class="font-bold">0%</span></p>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-4 border border-white/10">
+                    <h3 class="text-xl font-bold text-gold mb-3 border-b border-white/10 pb-2">إحصائيات اللاعب الثاني</h3>
+                    <p class="mb-1"><i class="fas fa-check-circle text-green-400 ml-2"></i> إجابات صحيحة: <span id="p2-correct" class="font-bold">0</span></p>
+                    <p class="mb-1"><i class="fas fa-times-circle text-red-400 ml-2"></i> إجابات خاطئة: <span id="p2-wrong" class="font-bold">0</span></p>
+                    <p><i class="fas fa-chart-pie text-blue-400 ml-2"></i> نسبة النجاح: <span id="p2-ratio" class="font-bold">0%</span></p>
+                </div>
+            </div>
+
+            <button onclick="resetGame()" class="bg-white text-blue-900 font-black text-xl py-3 px-10 rounded-full hover:bg-gray-200 hover:scale-105 transition-all shadow-lg">
+                <i class="fas fa-redo-alt mr-2"></i> العب مرة أخرى
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        // --- Game Data & State ---
+        const ALL_TEAMS = [
+            { name: "الأرجنتين", flag: "🇦🇷" }, { name: "فرنسا", flag: "🇫🇷" },
+            { name: "إنجلترا", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿" }, { name: "البرازيل", flag: "🇧🇷" },
+            { name: "إسبانيا", flag: "🇪🇸" }, { name: "البرتغال", flag: "🇵🇹" },
+            { name: "ألمانيا", flag: "🇩🇪" }, { name: "النرويج", flag: "🇳🇴" },
+            { name: "المغرب", flag: "🇲🇦" }, { name: "مصر", flag: "🇪🇬" },
+            { name: "السعودية", flag: "🇸🇦" }, { name: "هولندا", flag: "🇳🇱" },
+            { name: "إيطاليا", flag: "🇮🇹" }, { name: "الولايات المتحدة", flag: "🇺🇸" },
+            { name: "كندا", flag: "🇨🇦" }, { name: "كوريا الجنوبية", flag: "🇰🇷" },
+            { name: "أوروغواي", flag: "🇺🇾" }, { name: "كرواتيا", flag: "🇭🇷" },
+            { name: "اليابان", flag: "🇯🇵" }, { name: "السنغال", flag: "🇸🇳" }
+        ];
+
+        // 20 Questions
+        const PLAYERS_DB = [
+            { name: "ليونيل ميسي", img: "https://upload.wikimedia.org/wikipedia/commons/b/b4/Lionel-Messi-Argentina-2022-FIFA-World-Cup_%28cropped%29.jpg", team: "الأرجنتين", type: "أسطورة عالمية" },
+            { name: "كيليان مبابي", img: "https://upload.wikimedia.org/wikipedia/commons/b/b3/2022_FIFA_World_Cup_France_4%E2%80%931_Australia_-_%287%29_%28cropped%29.jpg", team: "فرنسا", type: "نجم هجومي" },
+            { name: "جود بيلينغهام", img: "https://upload.wikimedia.org/wikipedia/commons/c/c5/Jude_Bellingham_2023.jpg", team: "إنجلترا", type: "لاعب وسط شاب" },
+            { name: "فينيسيوس جونيور", img: "https://upload.wikimedia.org/wikipedia/commons/1/13/Vin%C3%ADcius_J%C3%BAnior_2023.jpg", team: "البرازيل", type: "جناح طائر" },
+            { name: "لامين يامال", img: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Lamine_Yamal_2023.jpg", team: "إسبانيا", type: "موهبة صاعدة" },
+            { name: "كريستيانو رونالدو", img: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Cristiano_Ronaldo_playing_for_Al_Nassr_FC_against_Persepolis%2C_September_2023_%28cropped%29.jpg", team: "البرتغال", type: "أسطورة عالمية" },
+            { name: "إيرلينغ هالاند", img: "https://upload.wikimedia.org/wikipedia/commons/0/07/Erling_Haaland_2023_%28cropped%29.jpg", team: "النرويج", type: "هداف بالفطرة" },
+            { name: "محمد صلاح", img: "https://upload.wikimedia.org/wikipedia/commons/c/c1/Mohamed_Salah_2018.jpg", team: "مصر", type: "نجم عالمي" },
+            { name: "أشرف حكيمي", img: "https://upload.wikimedia.org/wikipedia/commons/7/75/Achraf_Hakimi_2018.jpg", team: "المغرب", type: "ظهير أيمن" },
+            { name: "جمال موسيالا", img: "https://upload.wikimedia.org/wikipedia/commons/4/4b/Jamal_Musiala_2022.jpg", team: "ألمانيا", type: "صانع ألعاب" },
+            { name: "سالم الدوسري", img: "https://upload.wikimedia.org/wikipedia/commons/6/69/Salem_Al-Dawsari_2018.jpg", team: "السعودية", type: "نجم عربي" },
+            { name: "كيفين دي بروين", img: "https://upload.wikimedia.org/wikipedia/commons/6/67/Kevin_De_Bruyne_2018.jpg", team: "بلجيكا", type: "مايسترو الوسط" },
+            { name: "فيرجيل فان دايك", img: "https://upload.wikimedia.org/wikipedia/commons/e/ee/Virgil_van_Dijk_2023.jpg", team: "هولندا", type: "مدافع صلب" },
+            { name: "جيانلويجي دوناروما", img: "https://upload.wikimedia.org/wikipedia/commons/8/87/Gianluigi_Donnarumma_2021.jpg", team: "إيطاليا", type: "حارس مرمى" },
+            { name: "ألفونسو ديفيز", img: "https://upload.wikimedia.org/wikipedia/commons/5/52/Alphonso_Davies_2019.jpg", team: "كندا", type: "ظهير أيسر سريع" },
+            { name: "سون هيونغ مين", img: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Son_Heung-min_2022.jpg", team: "كوريا الجنوبية", type: "نجم آسيوي" },
+            { name: "كريستيان بوليسيتش", img: "https://upload.wikimedia.org/wikipedia/commons/1/15/Christian_Pulisic_2022.jpg", team: "الولايات المتحدة", type: "جناح هجومي" },
+            { name: "فيديريكو فالفيردي", img: "https://upload.wikimedia.org/wikipedia/commons/8/82/Federico_Valverde_2019.jpg", team: "أوروغواي", type: "لاعب وسط" },
+            { name: "لوكا مودريتش", img: "https://upload.wikimedia.org/wikipedia/commons/b/b8/Luka_Modric_2022.jpg", team: "كرواتيا", type: "قائد محنك" },
+            { name: "ساديو ماني", img: "https://upload.wikimedia.org/wikipedia/commons/6/67/Sadio_Man%C3%A9_2022.jpg", team: "السنغال", type: "نجم إفريقي" }
+        ];
+
+        let currentRound = 0;
+        let currentPlayer = 1;
+        let scores = { 1: 0, 2: 0 };
+        let stats = { 1: { correct: 0, wrong: 0 }, 2: { correct: 0, wrong: 0 } };
+        let activeQuestions = [];
+        let timerInterval;
+        let timeLeft = 10.0;
+        const TIME_LIMIT = 10.0;
+        let isAnswered = false;
+
+        // Settings
+        let musicEnabled = true;
+        let sfxEnabled = true;
+
+        // --- Audio Context for generated SFX (Zero Dependencies) ---
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let actx;
+
+        function playSFX(type) {
+            if (!sfxEnabled) return;
+            if (!actx) actx = new AudioContext();
+            if (actx.state === 'suspended') actx.resume();
+
+            const osc = actx.createOscillator();
+            const gain = actx.createGain();
+            osc.connect(gain);
+            gain.connect(actx.destination);
+
+            const now = actx.currentTime;
+
+            if (type === 'correct') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(80, now + 0.3);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'win') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(554.37, now + 0.2);
+                osc.frequency.setValueAtTime(659.25, now + 0.4);
+                osc.frequency.setValueAtTime(880, now + 0.6);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 1.5);
+                osc.start(now);
+                osc.stop(now + 1.5);
+            }
+        }
+
+        // --- DOM Elements ---
+        const els = {
+            bgMusic: document.getElementById('bg-music'),
+            musicBtn: document.getElementById('music-btn'),
+            sfxBtn: document.getElementById('sfx-btn'),
+            startBtn: document.getElementById('start-game-btn'),
+            startScreen: document.getElementById('start-screen'),
+            gameScreen: document.getElementById('game-screen'),
+            endScreen: document.getElementById('end-screen'),
+            p1Score: document.getElementById('p1-score'),
+            p2Score: document.getElementById('p2-score'),
+            p1Panel: document.getElementById('p1-panel'),
+            p2Panel: document.getElementById('p2-panel'),
+            roundLabel: document.getElementById('round-current text-white'),
+            turnIndicator: document.getElementById('turn-indicator'),
+            playerImage: document.getElementById('player-image'),
+            playerName: document.getElementById('player-name'),
+            playerType: document.getElementById('player-type'),
+            optionsContainer: document.getElementById('options-container'),
+            timerText: document.getElementById('timer-text'),
+            timerCircle: document.getElementById('timer-circle'),
+            feedbackOverlay: document.getElementById('feedback-overlay'),
+            feedbackIcon: document.getElementById('feedback-icon'),
+            feedbackMsg: document.getElementById('feedback-msg')
+        };
+
+        // --- Initialization ---
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        els.startBtn.addEventListener('click', () => {
+            if (musicEnabled) els.bgMusic.play().catch(() => console.log('Audio autoplay blocked'));
+            if (!actx) actx = new AudioContext(); // Initialize context on user gesture
+            
+            els.startScreen.classList.add('hidden');
+            els.gameScreen.classList.remove('hidden');
+            els.gameScreen.classList.add('flex');
+            
+            resetGame();
+        });
+
+        function resetGame() {
+            scores = { 1: 0, 2: 0 };
+            stats = { 1: { correct: 0, wrong: 0 }, 2: { correct: 0, wrong: 0 } };
+            currentRound = 0;
+            currentPlayer = 1;
+            activeQuestions = shuffle([...PLAYERS_DB]);
+            
+            updateScores();
+            els.endScreen.classList.add('hidden');
+            els.gameScreen.classList.remove('hidden');
+            els.gameScreen.classList.add('flex');
+            document.getElementById('confetti-canvas').classList.add('hidden');
+            
+            loadRound();
+        }
+
+        // --- Game Logic ---
+        function loadRound() {
+            isAnswered = false;
+            const question = activeQuestions[currentRound];
+            
+            // UI Updates
+            els.roundLabel.innerText = currentRound + 1;
+            els.turnIndicator.innerText = currentPlayer === 1 ? "دور اللاعب الأول" : "دور اللاعب الثاني";
+            els.turnIndicator.className = `mb-4 px-6 py-2 rounded-full font-bold text-lg animate-pulse transition-colors ${currentPlayer === 1 ? 'bg-blue-600 border border-blue-400' : 'bg-purple-600 border border-purple-400'}`;
+            
+            // Highlight current player panel
+            els.p1Panel.classList.toggle('bg-white/10', currentPlayer === 1);
+            els.p1Panel.classList.toggle('border', currentPlayer === 1);
+            els.p1Panel.classList.toggle('border-white/30', currentPlayer === 1);
+            els.p2Panel.classList.toggle('bg-white/10', currentPlayer === 2);
+            els.p2Panel.classList.toggle('border', currentPlayer === 2);
+            els.p2Panel.classList.toggle('border-white/30', currentPlayer === 2);
+
+            // Set Player Data
+            els.playerImage.src = question.img;
+            els.playerImage.alt = question.name;
+            els.playerName.innerText = question.name;
+            els.playerType.innerText = question.type;
+            els.feedbackOverlay.classList.remove('opacity-100', 'scale-100');
+            els.feedbackOverlay.classList.add('opacity-0', 'scale-50');
+            els.feedbackMsg.style.opacity = '0';
+
+            // Generate Options
+            const correctTeamObj = ALL_TEAMS.find(t => t.name === question.team) || { name: question.team, flag: "🏳️" };
+            const wrongTeams = shuffle(ALL_TEAMS.filter(t => t.name !== question.team)).slice(0, 2);
+            const options = shuffle([correctTeamObj, ...wrongTeams]);
+
+            els.optionsContainer.innerHTML = '';
+            options.forEach(opt => {
+                const isCorrect = opt.name === question.team;
+                const btn = document.createElement('button');
+                btn.className = 'glass-panel p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-white/10 transition-all transform hover:scale-105 border border-transparent';
+                btn.innerHTML = `<span class="text-4xl mb-1">${opt.flag}</span><span class="font-bold text-lg">${opt.name}</span>`;
+                btn.onclick = () => handleAnswer(btn, isCorrect, opt.name);
+                btn.dataset.correct = isCorrect;
+                els.optionsContainer.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        function startTimer() {
+            timeLeft = TIME_LIMIT;
+            updateTimerUI();
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(() => {
+                timeLeft -= 0.1;
+                updateTimerUI();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    timeLeft = 0;
+                    handleTimeout();
+                }
+            }, 100);
+        }
+
+        function updateTimerUI() {
+            els.timerText.innerText = Math.ceil(timeLeft);
+            
+            // Stroke dasharray is 175.9 (2 * PI * 28)
+            const offset = 175.9 - (timeLeft / TIME_LIMIT) * 175.9;
+            els.timerCircle.style.strokeDashoffset = offset;
+
+            els.timerCircle.className = 'transition-all duration-100 ease-linear ';
+            if (timeLeft > 5) {
+                els.timerCircle.classList.add('text-green-400');
+            } else if (timeLeft > 3) {
+                els.timerCircle.classList.add('text-yellow-400');
+            } else {
+                els.timerCircle.classList.add('text-red-500');
+            }
+        }
+
+        function handleAnswer(btnElement, isCorrect, teamName) {
+            if (isAnswered) return;
+            isAnswered = true;
+            clearInterval(timerInterval);
+
+            // Disable all buttons
+            const buttons = els.optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => b.style.pointerEvents = 'none');
+
+            if (isCorrect) {
+                const points = timeLeft >= 5 ? 15 : 10;
+                scores[currentPlayer] += points;
+                stats[currentPlayer].correct++;
+                updateScores();
+                
+                btnElement.classList.add('correct-answer-fx', 'animate-pop');
+                showFeedback(true, points);
+                playSFX('correct');
+            } else {
+                stats[currentPlayer].wrong++;
+                btnElement.classList.add('wrong-answer-fx', 'animate-shake');
+                
+                // Highlight correct answer
+                buttons.forEach(b => {
+                    if (b.dataset.correct === 'true') {
+                        b.classList.add('border-green-400', 'bg-green-900/50');
+                    }
+                });
+                
+                showFeedback(false, 0);
+                playSFX('wrong');
+            }
+
+            setTimeout(nextTurn, 2500);
+        }
+
+        function handleTimeout() {
+            if (isAnswered) return;
+            isAnswered = true;
+            stats[currentPlayer].wrong++;
+            
+            // Highlight correct answer
+            const buttons = els.optionsContainer.querySelectorAll('button');
+            buttons.forEach(b => {
+                b.style.pointerEvents = 'none';
+                if (b.dataset.correct === 'true') {
+                    b.classList.add('border-green-400', 'bg-green-900/50', 'animate-pop');
+                }
+            });
+
+            showFeedback(false, 0, "انتهى الوقت!");
+            playSFX('wrong');
+            setTimeout(nextTurn, 2500);
+        }
+
+        function showFeedback(isCorrect, points, customMsg = null) {
+            els.feedbackOverlay.classList.remove('opacity-0', 'scale-50');
+            els.feedbackOverlay.classList.add('opacity-100', 'scale-100');
+            
+            if (isCorrect) {
+                els.feedbackIcon.className = 'fas fa-check text-6xl text-green-400 drop-shadow-[0_0_15px_rgba(74,222,128,0.8)]';
+                els.feedbackMsg.innerHTML = `<span class="text-green-400">إجابة صحيحة! (+${points} نقطة)</span>`;
+            } else {
+                els.feedbackIcon.className = 'fas fa-times text-6xl text-red-500 drop-shadow-[0_0_15px_rgba(239,68,68,0.8)]';
+                els.feedbackMsg.innerHTML = `<span class="text-red-400">${customMsg || 'إجابة خاطئة!'}</span>`;
+            }
+            els.feedbackMsg.style.opacity = '1';
+        }
+
+        function updateScores() {
+            els.p1Score.innerText = scores[1];
+            els.p2Score.innerText = scores[2];
+        }
+
+        function nextTurn() {
+            currentRound++;
+            if (currentRound >= activeQuestions.length) {
+                endGame();
+            } else {
+                currentPlayer = currentPlayer === 1 ? 2 : 1;
+                loadRound();
+            }
+        }
+
+        function endGame() {
+            els.gameScreen.classList.remove('flex');
+            els.gameScreen.classList.add('hidden');
+            els.endScreen.classList.remove('hidden');
+            
+            let winnerText = "";
+            if (scores[1] > scores[2]) winnerText = "اللاعب الأول فاز! 🥇";
+            else if (scores[2] > scores[1]) winnerText = "اللاعب الثاني فاز! 🥇";
+            else winnerText = "تعادل مثير! 🤝";
+
+            document.getElementById('winner-text').innerText = winnerText;
+            document.getElementById('final-score-text').innerText = `النتيجة النهائية: ${scores[1]} - ${scores[2]}`;
+
+            // Populate Stats
+            const p1Total = stats[1].correct + stats[1].wrong;
+            const p2Total = stats[2].correct + stats[2].wrong;
+            
+            document.getElementById('p1-correct').innerText = stats[1].correct;
+            document.getElementById('p1-wrong').innerText = stats[1].wrong;
+            document.getElementById('p1-ratio').innerText = p1Total > 0 ? Math.round((stats[1].correct / p1Total) * 100) + '%' : '0%';
+
+            document.getElementById('p2-correct').innerText = stats[2].correct;
+            document.getElementById('p2-wrong').innerText = stats[2].wrong;
+            document.getElementById('p2-ratio').innerText = p2Total > 0 ? Math.round((stats[2].correct / p2Total) * 100) + '%' : '0%';
+
+            playSFX('win');
+            startConfetti();
+        }
+
+        // --- Audio Controls ---
+        els.musicBtn.addEventListener('click', () => {
+            musicEnabled = !musicEnabled;
+            if (musicEnabled) {
+                els.bgMusic.play();
+                els.musicBtn.innerHTML = '<i class="fas fa-music text-lg text-white"></i>';
+            } else {
+                els.bgMusic.pause();
+                els.musicBtn.innerHTML = '<i class="fas fa-music-slash text-lg text-gray-400"></i>';
+            }
+        });
+
+        els.sfxBtn.addEventListener('click', () => {
+            sfxEnabled = !sfxEnabled;
+            if (sfxEnabled) {
+                els.sfxBtn.innerHTML = '<i class="fas fa-volume-up text-lg text-white"></i>';
+            } else {
+                els.sfxBtn.innerHTML = '<i class="fas fa-volume-mute text-lg text-gray-400"></i>';
+            }
+        });
+
+        // --- Confetti Effect ---
+        let confettiInterval;
+        function startConfetti() {
+            const canvas = document.getElementById('confetti-canvas');
+            canvas.classList.remove('hidden');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            const particles = [];
+            for (let i = 0; i < 150; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    r: Math.random() * 6 + 2,
+                    dx: Math.random() * 4 - 2,
+                    dy: Math.random() * 5 + 2,
+                    color: `hsl(${Math.random() * 360}, 100%, 50%)`,
+                    tilt: Math.random() * 10 - 10
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    p.y += p.dy;
+                    p.x += Math.sin(p.tilt) * 2;
+                    p.tilt += 0.1;
+                    if (p.y > canvas.height) {
+                        p.y = -10;
+                        p.x = Math.random() * canvas.width;
+                    }
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+                confettiInterval = requestAnimationFrame(animate);
+            }
+            animate();
+            
+            // Stop confetti after 5 seconds to save resources
+            setTimeout(() => {
+                cancelAnimationFrame(confettiInterval);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                canvas.classList.add('hidden');
+            }, 8000);
+        }
+    </script>
+</body>
+</html>
